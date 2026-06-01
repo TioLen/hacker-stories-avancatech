@@ -1,6 +1,8 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import Item from './components/Item';
 import List from './components/List';
+import Search from './components/Search';
+
 {/*
 // '.' significa o ditório atual
 // '/components' significa a pasta 'components'
@@ -42,18 +44,17 @@ function App() {
       <h1>Minhas Histórias Hacker</h1>
 
       {/* Barra de busca */}
-      <label htmlFor="search">Procurar: </label>
-      <input type="text" id="search" />
+      <Search />
       <hr /> {/* Printa uma linha */}
-
-      <>
+      
       {/*
         <ListFunction listParameter={list}/>
         O primeiro "List", é a função.
         O segundo "list" é o parâmetro da função.
         O terceiro "list", é a lista criada no início do código.
       */}
-      </> <List list={list}/>
+
+      <List list={list}/>
     </div>
   );
 }
