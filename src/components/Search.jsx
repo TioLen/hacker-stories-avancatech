@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 
 function Search({ onSearch, searchTerm}){
-    // const [searchTerm, setSearchTerm] = useState('');
-
-    // const handleChange = (event) => {
-    //     console.log(event.target.value);
-    //     setSearchTerm(event.target.value);
-    // };
-
-
+/*  Os props deste função são passados de um componente externo, como no exemplo:
+    "<Search onSearch={handleChange} searchTerm={searchTerm} />"
+    Para entender o fluxo como um todo, vide como é feito no App.jsx.
+*/
     return(
         <div>
             <label htmlFor="search">Pesquisar: </label>

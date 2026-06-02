@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Item from './components/Item';
 import List from './components/List';
 import Search from './components/Search';
@@ -37,14 +37,19 @@ const list = [
   },
 ];
 
-// Por agora, estamos fazendo os componentes dentro do App.
 function App() {
-  const [searchTerm, setSearchTerm] = useState('');
 
+  const [searchTerm, setSearchTerm] = useState(
+    localStorage.getItem('searchTerm') || ''
+  );
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
   };
+
+  useEffect(() => {
+    localStorage.setItem('searchTerm', searchTerm);
+  }, [searchTerm]);
 
   // Lógica de filtro
   const filteredList = list.filter(
@@ -57,18 +62,18 @@ function App() {
   return (
     <div>
       <h1>Minhas Histórias Hacker</h1>
-      {/* Barra de busca */}
       <Search onSearch={handleChange} searchTerm={searchTerm} />
+
       <p>Mostrando resultados para "{searchTerm}"</p>
-      <hr /> {/* Printa uma linha */}
-      <>{/*
-        <ListFunction listParameter={list}/>
+      <hr />
+
+      <>{/* <List list={filteredList}/>
         O primeiro "List", é a função.
         O segundo "list" é o parâmetro da função.
         O terceiro "list", é a lista criada no início do código.
       */}</>
-
       <List list={filteredList}/>
+      
     </div>
   );
 }
