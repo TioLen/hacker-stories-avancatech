@@ -9,39 +9,16 @@ import Search from './components/Search';
 // ele busca esta pasta no diretório atual 
 */}
 
-// list de 'stories'
-const list = [
-  {
-    title: 'React',
-    url: 'https://reactjs.org/',
-    author: 'Jordan Walke',
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: 'Redux',
-    url: 'https://redux.js.org/',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-  {
-    title: 'Redux',
-    url: 'https://redux.js.org/',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 2,
-  },
-];
 
 function App() {
 
   const [searchTerm, setSearchTerm] = useState(
     localStorage.getItem('searchTerm') || ''
   );
+
+  const [stories, setStories] = useState([]);          // estados das stories
+  const [isLoading, setIsLoading] = useState(false);  // estado de carregamento
+  const [isError, setIsError] = useState(false);      // estado de erro
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
@@ -51,12 +28,38 @@ function App() {
     localStorage.setItem('searchTerm', searchTerm);
   }, [searchTerm]);
 
-  // Lógica de filtro
-  const filteredList = list.filter(
-    function (item){
-      return item.title.toLowerCase().includes(searchTerm.toLowerCase());
-    }
-  );
+  // efeit para buscar dados da API
+  useEffect(() =>{
+    setIsLoading(true);
+    setIsError(false);
+
+    fetch(`https://hn.algolia.com/api/v1/search?query=${searchTerm}`)
+      .then(response => response.json())
+      .then(result => {
+        setStories(result.hits);  // atualiza o estado com as stories
+        setIsLoading(false);      // finaliza o carregamento
+      })
+      .catch(() => {
+        setIsError(true);   // define o estado de erro
+        setIsLoading(false);// finaliza o carregamento
+      });
+      
+  },[searchTerm])
+
+  // Lógica de filtro (antiga)
+  // const filteredList = stories.filter(
+  //   function (item){
+  //     return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+  //   }
+  // )
+
+  // Com verificação de erro
+    const filteredList = stories.filter(function (item) {
+      const title = (item && (item.title || item.story_title) || '').toLowerCase();
+        return title.includes(searchTerm.toLowerCase());
+      }
+    );
+  
 
   // renderizar elementos na tela
   return (
@@ -65,14 +68,18 @@ function App() {
       <Search onSearch={handleChange} searchTerm={searchTerm} />
 
       <p>Mostrando resultados para "{searchTerm}"</p>
+
       <hr />
 
-      <>{/* <List list={filteredList}/>
-        O primeiro "List", é a função.
-        O segundo "list" é o parâmetro da função.
-        O terceiro "list", é a lista criada no início do código.
-      */}</>
-      <List list={filteredList}/>
+      {/* Se isError é true, renderizar logo em seguida o conteúdo após '&&' */}
+      {isError && <p>Algo deu errado ao carregar as histórias.</p>}
+
+      {isLoading ?
+        (<p>Carregando histórias...</p>) // se isLoading == true
+        :
+        (<List list={filteredList}/>)    // se isLoading == false
+      }
+
       
     </div>
   );
