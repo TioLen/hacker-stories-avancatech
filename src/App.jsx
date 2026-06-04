@@ -1,14 +1,26 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useActionState} from 'react';
 import Item from './components/Item';
 import List from './components/List';
 import Search from './components/Search';
 
-{/*
-// '.' significa o ditório atual
-// '/components' significa a pasta 'components'
-// ele busca esta pasta no diretório atual 
-*/}
+// Action para simular a adição de uma story no banco de dados
+async function addStoryAction(prevState, formData){
+  const title = formData.get('title');
+  const author = formData.get('author');
 
+  console.log("Simulando adição de story: ", {title, author});
+
+
+  await new Promise(resolve => setTimeout(resolve,1000));
+
+
+  if( !title || !author){
+    return {success: false, message: 'Título e autor são obrigatórios!'};
+  } 
+
+  return {success: true, message: `Story '${title}' adicionada com sucesso!`};
+
+}
 
 function App() {
 
@@ -19,6 +31,12 @@ function App() {
   const [stories, setStories] = useState([]);          // estados das stories
   const [isLoading, setIsLoading] = useState(false);  // estado de carregamento
   const [isError, setIsError] = useState(false);      // estado de erro
+
+  const [submissionState, submissionStoryAction] = useActionState(addStoryAction, null);
+
+  
+
+
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
@@ -80,6 +98,25 @@ function App() {
         (<List list={filteredList}/>)    // se isLoading == false
       }
 
+      <hr/>
+
+      <h2>Adicionar Novo Story</h2>
+      <form action={submissionStoryAction}>
+        <div>
+          <label htmlFor="title">Título: </label>
+          <input id="title" name="title" type="text" />
+        </div>
+        <div>
+          <label htmlFor="author">Autor: </label>
+          <input id="author" name="author" type="text" />
+        </div>
+        <button type="submit">Adicionar</button>
+        {submissionState?.message && (
+          <p style={{color: submissionState.success ? 'green' : 'red'}}>
+            {submissionState.message}
+          </p>
+        )}
+      </form>
       
     </div>
   );
