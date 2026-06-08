@@ -3,6 +3,8 @@ import Item from './components/Item';
 import List from './components/List';
 import Search from './components/Search';
 
+import useSemiPersistentState from './hooks/useSemiPersistentState';
+
 // Action para simular a adição de uma story no banco de dados
 async function addStoryAction(prevState, formData){
   const title = formData.get('title');
@@ -17,14 +19,12 @@ async function addStoryAction(prevState, formData){
   if( !title || !author){
     return {success: false, message: 'Título e autor são obrigatórios!'};
   } 
-
   return {success: true, message: `Story '${title}' adicionada com sucesso!`};
-
 }
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState(
-    localStorage.getItem('searchTerm') || ''
+  const [searchTerm, setSearchTerm] = useSemiPersistentState(
+    'searchTerm' || ''
   );
 
   const [stories, setStories] = useState([]);          // estados das stories
@@ -60,8 +60,6 @@ function App() {
       })
   },[searchTerm])
 
-  // console.log(response);
-
   // Com verificação de erro
     const filteredList = stories.filter(function (item) {
       const title = (item && (item.title || item.story_title) || '').toLowerCase();
@@ -69,7 +67,6 @@ function App() {
       }
     );
   
-
   // renderizar elementos na tela
   return (
     <div>
