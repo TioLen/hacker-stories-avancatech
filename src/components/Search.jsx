@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from '../../src/App.module.css';
 
 function Search({ onSearch, searchTerm}){
 /*  Os props deste função são passados de um componente externo, como no exemplo:
@@ -7,9 +8,14 @@ function Search({ onSearch, searchTerm}){
 */
     return(
         <div>
-            <label htmlFor="search">Pesquisar: </label>
-            <input id="search" type="text" value={searchTerm} onChange={onSearch}/>
-            
+            <label htmlFor="search" className={styles.searchLabel}>Pesquisar: </label>
+            <input
+                id="search"
+                type="text"
+                value={searchTerm}
+                onChange={onSearch}
+                className={styles.searchInput}
+            />
         </div>
     );
 }

@@ -2,8 +2,11 @@ import React, {useState, useEffect, useActionState} from 'react';
 import Item from './components/Item';
 import List from './components/List';
 import Search from './components/Search';
-
 import useSemiPersistentState from './hooks/useSemiPersistentState';
+
+import styles from './App.module.css'; // Importe o CSS Module
+import './index.css'
+
 
 // Action para simular a adição de uma story no banco de dados
 async function addStoryAction(prevState, formData){
@@ -69,8 +72,8 @@ function App() {
   
   // renderizar elementos na tela
   return (
-    <div>
-      <h1>Minhas Histórias Hacker</h1>
+    <div className={styles.container}>
+      <h1 className={styles.header}>Minhas Histórias Hacker</h1>
       <Search onSearch={handleChange} searchTerm={searchTerm} />
 
       <p>Mostrando resultados para "{searchTerm}"</p>
@@ -78,10 +81,10 @@ function App() {
       <hr />
 
       {/* Se isError é true, renderizar logo em seguida o conteúdo após '&&' */}
-      {isError && <p>Algo deu errado ao carregar as histórias.</p>}
+      {isError && <p className={styles.errorMessage}>Algo deu errado ao carregar as histórias.</p>}
 
       {isLoading ?
-        (<p>Carregando histórias...</p>) // se isLoading == true
+        (<p className={styles.loadingMessage}>Carregando histórias...</p>) // se isLoading == true
         :
         (<List list={filteredList}/>)    // se isLoading == false
       }
