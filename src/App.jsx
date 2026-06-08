@@ -23,7 +23,6 @@ async function addStoryAction(prevState, formData){
 }
 
 function App() {
-
   const [searchTerm, setSearchTerm] = useState(
     localStorage.getItem('searchTerm') || ''
   );
@@ -34,42 +33,34 @@ function App() {
 
   const [submissionState, submissionStoryAction] = useActionState(addStoryAction, null);
 
-  
-
-
-
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
+  // salva o termo de pesquisa no cache do navegador
   useEffect(() => {
     localStorage.setItem('searchTerm', searchTerm);
   }, [searchTerm]);
 
-  // efeit para buscar dados da API
+  // efeito para buscar dados da API
   useEffect(() =>{
-    setIsLoading(true);
-    setIsError(false);
+    setIsLoading(true); // carregando = true
+    setIsError(false); // diz que por agora não há erro
 
     fetch(`https://hn.algolia.com/api/v1/search?query=${searchTerm}`)
-      .then(response => response.json())
+      .then(response => response.json()) // obtém a resposta e serializa ela
+                                         // (passar para tipo de dado estruturado)
       .then(result => {
         setStories(result.hits);  // atualiza o estado com as stories
         setIsLoading(false);      // finaliza o carregamento
       })
-      .catch(() => {
+      .catch(() => { // caso haja algum erro:
         setIsError(true);   // define o estado de erro
-        setIsLoading(false);// finaliza o carregamento
-      });
-      
+        setIsLoading(false); // finaliza o carregamento
+      })
   },[searchTerm])
 
-  // Lógica de filtro (antiga)
-  // const filteredList = stories.filter(
-  //   function (item){
-  //     return item.title.toLowerCase().includes(searchTerm.toLowerCase());
-  //   }
-  // )
+  // console.log(response);
 
   // Com verificação de erro
     const filteredList = stories.filter(function (item) {
@@ -117,7 +108,6 @@ function App() {
           </p>
         )}
       </form>
-      
     </div>
   );
 }
