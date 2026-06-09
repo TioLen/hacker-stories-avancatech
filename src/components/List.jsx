@@ -1,5 +1,5 @@
 import Item from './Item';
-
+import style from './List.module.css'
 {/* Lista não ordenada que imprime os itens */}
 function List({list}){
   return (
